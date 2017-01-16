@@ -33,7 +33,6 @@ public class DirectionController  {
 	@RequestMapping(value="/direction/addProduct",method = RequestMethod.POST)
 	public ModelAndView addProduct() {
 		Produit produit = new Produit();
-		
 		produit.setNom("céréales");
 		produit.setPrix(7);
 		produit.setQuantiteStock(1000);
@@ -61,6 +60,13 @@ public class DirectionController  {
 	public ModelAndView getAllProducts() {
 		List<Produit> produits= directionService.getAllProducts();
 		return new ModelAndView("create");
+	}
+	
+	@RequestMapping("/direction/listeDesProduits")
+	public ModelAndView listeDesProduits() {
+		List<Produit> produits= directionService.getAllProducts();
+		System.out.println("Le nombre total des produits est : "+produits.size());
+		return new ModelAndView("listeProduits","produits",produits);
 	}
 	
 	

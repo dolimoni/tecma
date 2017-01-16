@@ -12,8 +12,8 @@
 		<form:input path="nom" />
 		<form:label path="prix">Prix</form:label>
 		<form:input path="prix" />
-		<form:label path="setQuantiteStock">Quatité en stock</form:label>
-		<form:input path="setQuantiteStock" />
+		<form:label path="QuantiteStock">Quatité en stock</form:label>
+		<form:input path="QuantiteStock" />
 		<input type="submit" value="Submit" />
 	</form:form>
 </body>
