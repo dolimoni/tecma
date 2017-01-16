@@ -76,6 +76,13 @@ public class DirectionController  {
 		return new ModelAndView("create");
 	}
 	
+	@RequestMapping("/direction/listeDesCommandes")
+	public ModelAndView listeDesCommandes() {
+		List<Commande> commandes= directionService.getAllOrders();
+		return new ModelAndView("listeCommande","commandes",commandes);
+	}
+	
+	
 	@RequestMapping("/direction/approval")
 	public ModelAndView approval() {
 		Commande commande=commandeService.getCommandeById(1L);
