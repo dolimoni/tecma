@@ -26,13 +26,14 @@ public class DirectionController  {
 	
 	@RequestMapping("/direction/AjouterProduit")
 	public ModelAndView AjouterProduit() {
-
+		
 		return new ModelAndView("AjouterProduit","produit", new Produit());
 	}
 	
 	@RequestMapping(value="/direction/addProduct",method = RequestMethod.POST)
 	public ModelAndView addProduct() {
 		Produit produit = new Produit();
+		
 		produit.setNom("céréales");
 		produit.setPrix(7);
 		produit.setQuantiteStock(1000);

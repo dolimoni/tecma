@@ -10,6 +10,10 @@
 	<form:form method="POST" action="addProduct" modelAttribute="produit">
 		<form:label path="nom">Name</form:label>
 		<form:input path="nom" />
+		<form:label path="prix">Prix</form:label>
+		<form:input path="prix" />
+		<form:label path="setQuantiteStock">Quatité en stock</form:label>
+		<form:input path="setQuantiteStock" />
 		<input type="submit" value="Submit" />
 	</form:form>
 </body>
