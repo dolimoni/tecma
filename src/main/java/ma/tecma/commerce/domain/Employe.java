@@ -21,7 +21,7 @@ public class Employe {
 	@Column(name = "EMPLOYE_ID")
 	private Long id;
 	private String name;
-	
+	private String password;
 	@OneToMany
 	private List<Commande> commandes = new ArrayList<Commande>();
 	public Employe() {

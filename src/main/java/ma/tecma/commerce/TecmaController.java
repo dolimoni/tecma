@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import ma.tecma.commerce.domain.Client;
 import ma.tecma.commerce.domain.Commande;
+import ma.tecma.commerce.domain.Commercial;
 import ma.tecma.commerce.service.CommandeService;
 import ma.tecma.commerce.service.DirectionService;
 
@@ -36,10 +37,14 @@ public class TecmaController {
 		return new ModelAndView("index");
 	}
 
-	@RequestMapping("/tecma/create")
+	@RequestMapping("/tecma/creerCommande")
 	public ModelAndView create() {
+		return new ModelAndView("creerCommande","commande",new Commande());
+	}
+	@RequestMapping("/tecma/createCommande")
+	public ModelAndView creerCommande() {
 		commandeService.AjouterUneCommande();// Bouchon
-		return new ModelAndView("create");
+		return new ModelAndView("commercial/index");
 	}
 
 	@RequestMapping("/tecma/getCommandeByCommercial")
@@ -111,6 +116,29 @@ public class TecmaController {
 		}else{
 			ModelAndView modelAndView = new ModelAndView("authentification");
 			modelAndView.addObject("client", client);
+			modelAndView.addObject("invalidUsernameOrPassword", true);
+			return modelAndView;
+		}
+		
+	}
+	
+	@RequestMapping("/tecma/authentificationCommercial")
+	public ModelAndView authentificationCommercial() {
+		Commercial commercial = new Commercial();
+		return new ModelAndView("commercial/authentification","client",commercial);
+	}
+	
+	
+	@RequestMapping(value="/tecma/authenticateCommercial",method = RequestMethod.POST)
+	public ModelAndView authenticateCommercial(@ModelAttribute("commercial")Commercial commercial, 
+			   ModelMap model,HttpServletRequest request) {
+		if(directionService.authenticateCommercial(commercial))
+		{
+			request.getSession().setAttribute("idCommercial", directionService.getIdCommercial(commercial));
+			return new ModelAndView("client/index");
+		}else{
+			ModelAndView modelAndView = new ModelAndView("commercial/authentification");
+			modelAndView.addObject("commercial", commercial);
 			modelAndView.addObject("invalidUsernameOrPassword", true);
 			return modelAndView;
 		}

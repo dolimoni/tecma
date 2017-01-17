@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import ma.tecma.commerce.domain.Client;
 import ma.tecma.commerce.domain.Commande;
+import ma.tecma.commerce.domain.Commercial;
 import ma.tecma.commerce.domain.Produit;
 import ma.tecma.commerce.repository.ClientRepository;
 import ma.tecma.commerce.repository.CommandeRepository;
@@ -69,5 +70,14 @@ public class DirectionService {
 		List<Client> clients = clientRepository.findByNomAndPassword(client.getNom(), client.getPassword());
 		Long id = clients.get(0).getId();
 		return id;
+	}
+
+	public boolean authenticateCommercial(Commercial commercial) {
+		List<Client> clients = clientRepository.findByNomAndPassword(commercial.getName(), commercial.getPassword());
+		if(clients.size()>0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }
