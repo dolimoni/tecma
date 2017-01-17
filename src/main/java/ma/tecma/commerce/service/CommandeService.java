@@ -109,5 +109,10 @@ public class CommandeService {
 		}
 		commandeRepository.saveAndFlush(commande);
 	}
+
+	public List<Commande> getCommandesByClient(Long id) {
+		Client client = clientRepository.findOne(id);
+		return commandeRepository.findByDestinataire(client);
+	}
 	
 }

@@ -1,6 +1,7 @@
 package ma.tecma.commerce.repository;
 import java.util.List;
 
+import ma.tecma.commerce.domain.Client;
 import ma.tecma.commerce.domain.Commande;
 import ma.tecma.commerce.domain.Commercial;
 
@@ -12,4 +13,5 @@ public interface CommandeRepository
 		JpaSpecificationExecutor<Commande> {
 	
 	public List<Commande> findByCommercial(Commercial commercial);
+	public List<Commande> findByDestinataire(Client client);
 }

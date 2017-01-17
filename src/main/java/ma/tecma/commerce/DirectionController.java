@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -63,10 +64,14 @@ public class DirectionController  {
 	}
 	
 	@RequestMapping("/direction/listeDesProduits")
-	public ModelAndView listeDesProduits() {
+	public ModelAndView listeDesProduits(@RequestParam("from") String from) {
+		String vue = "";
+		if("0".equals(from)){
+			vue="client/";
+		}
 		List<Produit> produits= directionService.getAllProducts();
-		System.out.println("Le nombre total des produits est : "+produits.size());
-		return new ModelAndView("listeProduits","produits",produits);
+		System.out.println("Nombre de produits "+produits.size()+" Affichage dans "+vue+"listeProduits");
+		return new ModelAndView(vue+"listeProduits","produits",produits);
 	}
 	
 	

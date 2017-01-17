@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import ma.tecma.commerce.domain.Client;
 import ma.tecma.commerce.domain.Commande;
 import ma.tecma.commerce.domain.Produit;
+import ma.tecma.commerce.repository.ClientRepository;
 import ma.tecma.commerce.repository.CommandeRepository;
 import ma.tecma.commerce.repository.ProduitRepository;
 
@@ -21,6 +23,9 @@ public class DirectionService {
 	
 	@Autowired
 	CommandeRepository commandeRepository;
+	
+	@Autowired
+	ClientRepository clientRepository;
 	
 	public DirectionService() {
 		// TODO Auto-generated constructor stub
@@ -38,5 +43,31 @@ public class DirectionService {
 	public List<Commande> getAllOrders() {
 		return commandeRepository.findAll();
 		
+	}
+
+	public boolean inscription(Client client) {
+		if("".equals(client.getNom()) || "".equals(client.getPassword()))
+			return false;
+		else{
+			clientRepository.saveAndFlush(client);
+			return true;
+		}
+		
+	}
+
+	public boolean authenticate(Client client) {
+		List<Client> clients = clientRepository.findByNomAndPassword(client.getNom(), client.getPassword());
+		if(clients.size()>0){
+			return true;
+		}else{
+			return false;
+		}
+	
+	}
+
+	public Long getIdClient(Client client) {
+		List<Client> clients = clientRepository.findByNomAndPassword(client.getNom(), client.getPassword());
+		Long id = clients.get(0).getId();
+		return id;
 	}
 }

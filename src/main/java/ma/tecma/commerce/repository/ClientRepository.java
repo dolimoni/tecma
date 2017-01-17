@@ -11,5 +11,6 @@ public interface ClientRepository
 		JpaSpecificationExecutor<Client> {
 	
 	public List<Client> findBySecteur(String secteur); 
+	public List<Client> findByNomAndPassword(String Nom,String password);
 	
 }
