@@ -11,9 +11,9 @@
 	Page d'authentification<br/>
 	
 	<c:if test="${invalidUsernameOrPassword}">Username ou password n'est pas valide</c:if>
-	<form:form method="POST" action="authenticate" modelAttribute="client">
-		<form:label path="nom">Name</form:label>
-		<form:input path="nom" />
+	<form:form method="POST" action="/system/tecma/authenticateCommercial" modelAttribute="commercial">
+		<form:label path="name">Name</form:label>
+		<form:input path="name" />
 		<form:label path="password">Password</form:label>
 		<form:input path="password" />
 		<input type="submit" value="Submit" />

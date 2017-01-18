@@ -54,4 +54,16 @@ public class Employe {
 	public void setCommandes(List<Commande> commandes) {
 		this.commandes = commandes;
 	}
+
+
+	public String getPassword() {
+		return password;
+	}
+
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
 }

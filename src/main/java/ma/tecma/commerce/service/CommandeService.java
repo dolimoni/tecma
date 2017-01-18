@@ -39,21 +39,10 @@ public class CommandeService {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Commande AjouterUneCommande(){
+	public Commande AjouterUneCommande(Commande commande, Long idCommercial, Client client){
 		
 		
-		Client client = clientRepository.findOne(new Long("2"));
-		Commande commande = new Commande();
-		
-		
-		
-		Produit produit = produitRepository.findOne(new Long("3"));
-		
-		
-		
-		//ajout du commercial
-		Commercial commercial = (Commercial) employeRepsitory.findOne(new Long("2"));
-		commande.setCommercial(commercial);
+
 		
 		//ajout de la date de livraison
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -68,16 +57,7 @@ public class CommandeService {
 		
 		//ajout de la date de validité
 		commande.setDateValidite(dateLivraison);
-		
-		
-		//ajout du client qui a effectué la commande
-		commande.setDestinataire(client);
-		
-		
-		commande.setProduit(produit);
 
-		commande.setQuantite(5);
-		commande.setTransport("AMANA");
 		return commandeRepository.saveAndFlush(commande);
 	}
 

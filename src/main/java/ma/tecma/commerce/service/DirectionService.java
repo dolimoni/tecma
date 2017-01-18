@@ -7,9 +7,12 @@ import javax.transaction.Transactional;
 import ma.tecma.commerce.domain.Client;
 import ma.tecma.commerce.domain.Commande;
 import ma.tecma.commerce.domain.Commercial;
+import ma.tecma.commerce.domain.Employe;
 import ma.tecma.commerce.domain.Produit;
 import ma.tecma.commerce.repository.ClientRepository;
 import ma.tecma.commerce.repository.CommandeRepository;
+import ma.tecma.commerce.repository.CommercialRepository;
+import ma.tecma.commerce.repository.EmployeRepository;
 import ma.tecma.commerce.repository.ProduitRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,12 @@ public class DirectionService {
 	
 	@Autowired
 	ClientRepository clientRepository;
+	
+	@Autowired
+	EmployeRepository employeRepository;
+	
+	@Autowired
+	CommercialRepository commercialRepository;
 	
 	public DirectionService() {
 		// TODO Auto-generated constructor stub
@@ -73,11 +82,20 @@ public class DirectionService {
 	}
 
 	public boolean authenticateCommercial(Commercial commercial) {
-		List<Client> clients = clientRepository.findByNomAndPassword(commercial.getName(), commercial.getPassword());
-		if(clients.size()>0){
+		List<Commercial> commercials = commercialRepository.findByNameAndPassword(commercial.getName(), commercial.getPassword());
+		
+		if(commercials.size()>0){
 			return true;
 		}else{
+			commercialRepository.findAll().size();
 			return false;
 		}
 	}
+
+	public Long getIdCommercial(Commercial commercial) {
+		List<Commercial> commercials = commercialRepository.findByNameAndPassword(commercial.getName(), commercial.getPassword());
+		return commercials.get(0).getId();
+	}
+
+	
 }

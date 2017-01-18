@@ -38,14 +38,22 @@ public class TecmaController {
 	}
 
 	@RequestMapping("/tecma/creerCommande")
-	public ModelAndView create() {
-		return new ModelAndView("creerCommande","commande",new Commande());
+	public ModelAndView creerCommande(HttpServletRequest request) {
+		Long id = (Long)request.getSession().getAttribute("idCommercial");
+		ModelAndView modelAndView = new ModelAndView("commercial/creerCommande");
+		modelAndView.addObject("commande", new Commande());
+		modelAndView.addObject("clients", getClientByCommercial(id));
+		return modelAndView;
 	}
-	@RequestMapping("/tecma/createCommande")
-	public ModelAndView creerCommande() {
-		commandeService.AjouterUneCommande();// Bouchon
+	@RequestMapping(value="/tecma/createCommande",method = RequestMethod.POST)
+	public ModelAndView createCommande(HttpServletRequest request, @ModelAttribute("commande")Commande commande) {
+		
+		Long idCommercial = (Long)request.getSession().getAttribute("idCommercial"); 
+		
+		commandeService.AjouterUneCommande(commande, idCommercial,commande.getDestinataire());// 
 		return new ModelAndView("commercial/index");
 	}
+	
 
 	@RequestMapping("/tecma/getCommandeByCommercial")
 	public ModelAndView getCommandeByCommercial() {
@@ -55,13 +63,10 @@ public class TecmaController {
 		return new ModelAndView("create");
 	}
 
-	@RequestMapping("/tecma/getClientByCommercial")
-	public ModelAndView getClientByCommercial() {
+	private List<Client> getClientByCommercial(Long id) {
 
-		Long id = 2L;// Bouchon
-		List<Client> clients = commandeService.getCommandeByClient(id);
-		System.out.println(clients.size());
-		return new ModelAndView("create");
+		return commandeService.getCommandeByClient(id);
+		
 	}
 
 	@RequestMapping("/tecma/getCommandeById")
@@ -125,7 +130,7 @@ public class TecmaController {
 	@RequestMapping("/tecma/authentificationCommercial")
 	public ModelAndView authentificationCommercial() {
 		Commercial commercial = new Commercial();
-		return new ModelAndView("commercial/authentification","client",commercial);
+		return new ModelAndView("commercial/authentification","commercial",commercial);
 	}
 	
 	
@@ -135,7 +140,7 @@ public class TecmaController {
 		if(directionService.authenticateCommercial(commercial))
 		{
 			request.getSession().setAttribute("idCommercial", directionService.getIdCommercial(commercial));
-			return new ModelAndView("client/index");
+			return new ModelAndView("commercial/index");
 		}else{
 			ModelAndView modelAndView = new ModelAndView("commercial/authentification");
 			modelAndView.addObject("commercial", commercial);
