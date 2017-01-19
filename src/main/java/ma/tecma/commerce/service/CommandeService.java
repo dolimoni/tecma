@@ -11,6 +11,8 @@ import ma.tecma.commerce.domain.Client;
 import ma.tecma.commerce.domain.Commande;
 import ma.tecma.commerce.domain.Commercial;
 import ma.tecma.commerce.domain.Produit;
+import ma.tecma.commerce.dtos.ClientDTO;
+import ma.tecma.commerce.dtos.CommandeDTO;
 import ma.tecma.commerce.repository.ClientRepository;
 import ma.tecma.commerce.repository.CommandeRepository;
 import ma.tecma.commerce.repository.EmployeRepository;
@@ -39,10 +41,22 @@ public class CommandeService {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Commande AjouterUneCommande(Commande commande, Long idCommercial, Client client){
+	public Commande AjouterUneCommande(CommandeDTO commandeDTO, Long idCommercial){
 		
 		
-
+		Commande commande = new Commande();
+		Commercial commercial = (Commercial)employeRepsitory.findOne(idCommercial);
+		Client client = clientRepository.findOne(new Long(commandeDTO.getClientId()));
+		Produit produit = produitRepository.findOne(new Long(commandeDTO.getProduitId()));
+		
+		
+		commande.setCommercial(commercial);
+		commande.setTransport(commandeDTO.getTransport());
+		commande.setSent(false);
+		commande.setQuantite(commandeDTO.getQuantite());
+		commande.setDestinataire(client);
+		commande.setProduit(produit);
+		
 		
 		//ajout de la date de livraison
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -93,6 +107,11 @@ public class CommandeService {
 	public List<Commande> getCommandesByClient(Long id) {
 		Client client = clientRepository.findOne(id);
 		return commandeRepository.findByDestinataire(client);
+	}
+
+	public List<Produit> getProductsByDomain(String secteur) {
+		// TODO Auto-generated method stub
+		return produitRepository.findBySecteur(secteur);
 	}
 	
 }

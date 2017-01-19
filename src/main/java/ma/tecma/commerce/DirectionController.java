@@ -1,8 +1,13 @@
 package ma.tecma.commerce;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import ma.tecma.commerce.domain.Client;
 import ma.tecma.commerce.domain.Commande;
+import ma.tecma.commerce.domain.Commercial;
 import ma.tecma.commerce.domain.Produit;
 import ma.tecma.commerce.service.CommandeService;
 import ma.tecma.commerce.service.DirectionService;
@@ -64,12 +69,26 @@ public class DirectionController  {
 	}
 	
 	@RequestMapping("/direction/listeDesProduits")
-	public ModelAndView listeDesProduits(@RequestParam("from") String from) {
-		String vue = "";
-		if("0".equals(from)){
-			vue="client/";
+	public ModelAndView listeDesProduits(@RequestParam("from") String from, HttpServletRequest request) {
+		Long idCommercial = (Long)request.getSession().getAttribute("commercialId");
+		if(idCommercial==null){
+			return new ModelAndView("commercial/authentification","commercial",new Commercial());
 		}
-		List<Produit> produits= directionService.getAllProducts();
+		String vue = "";
+		List<Produit> produits = new ArrayList<Produit>();
+		
+		if("0".equals(from)){
+			Long id = (Long)request.getSession().getAttribute("clientId");
+			Client client = directionService.getClient(id);
+			String secteur = client.getSecteur();
+			produits=commandeService.getProductsByDomain(secteur);
+			vue="client/";
+		}else{
+			 vue = "commercial/";
+			 Long id = (Long)request.getSession().getAttribute("commercialId");
+			 Commercial commercial = directionService.getCommercial(id);
+			 produits=commandeService.getProductsByDomain(commercial.getSecteur());
+		}
 		System.out.println("Nombre de produits "+produits.size()+" Affichage dans "+vue+"listeProduits");
 		return new ModelAndView(vue+"listeProduits","produits",produits);
 	}

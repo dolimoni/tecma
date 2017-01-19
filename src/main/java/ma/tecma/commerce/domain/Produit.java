@@ -16,6 +16,7 @@ public class Produit {
 	private String nom;
 	private int quantiteStock;
 	private long prix;
+	private String secteur;
 	
 	public long getId() {
 		return id;
@@ -47,6 +48,14 @@ public class Produit {
 
 	public void setPrix(long prix) {
 		this.prix = prix;
+	}
+
+	public String getSecteur() {
+		return secteur;
+	}
+
+	public void setSecteur(String secteur) {
+		this.secteur = secteur;
 	}
 	
 }

@@ -23,19 +23,19 @@ import org.springframework.stereotype.Component;
 public class DirectionService {
 
 	@Autowired
-	ProduitRepository produitRepository;
+	private ProduitRepository produitRepository;
 	
 	@Autowired
-	CommandeRepository commandeRepository;
+	private CommandeRepository commandeRepository;
 	
 	@Autowired
-	ClientRepository clientRepository;
+	private ClientRepository clientRepository;
 	
 	@Autowired
-	EmployeRepository employeRepository;
+	private EmployeRepository employeRepository;
 	
 	@Autowired
-	CommercialRepository commercialRepository;
+	private CommercialRepository commercialRepository;
 	
 	public DirectionService() {
 		// TODO Auto-generated constructor stub
@@ -95,6 +95,14 @@ public class DirectionService {
 	public Long getIdCommercial(Commercial commercial) {
 		List<Commercial> commercials = commercialRepository.findByNameAndPassword(commercial.getName(), commercial.getPassword());
 		return commercials.get(0).getId();
+	}
+
+	public Client getClient(Long id) {
+		return clientRepository.findOne(id);
+	}
+
+	public Commercial getCommercial(Long id) {
+		return commercialRepository.findOne(id);
 	}
 
 	

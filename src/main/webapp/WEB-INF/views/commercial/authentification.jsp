@@ -8,7 +8,7 @@
 	href="resources/bootstrap/css/bootstrap.css">
 <script src="resources/js/bootstrap.css"></script>
 <body>
-	Page d'authentification<br/>
+	Page d'authentification Commercial<br/>
 	
 	<c:if test="${invalidUsernameOrPassword}">Username ou password n'est pas valide</c:if>
 	<form:form method="POST" action="/system/tecma/authenticateCommercial" modelAttribute="commercial">
