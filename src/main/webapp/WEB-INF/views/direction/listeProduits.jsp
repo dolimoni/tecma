@@ -13,5 +13,8 @@
 <c:forEach items="${produits}" var="produit">
     ${produit.nom}<br>
 </c:forEach>
+
+<a href="/system/direction/AjouterProduit">Ajouter un nouveau produit</a>
+	<br />
 </body>
 </html>

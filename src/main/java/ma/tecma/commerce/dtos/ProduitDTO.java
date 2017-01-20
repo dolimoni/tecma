@@ -7,8 +7,12 @@ public class ProduitDTO {
 	
 	private Long id;
 	private String nom;
-	private String password;
+	private String prix;
 	private String secteur;
+	private int quantiteStock;
+	public ProduitDTO() {
+		// TODO Auto-generated constructor stub
+	}
 	public ProduitDTO(Produit produit) {
 		this.id=produit.getId();
 		this.nom=produit.getNom();
@@ -25,17 +29,26 @@ public class ProduitDTO {
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
 	public String getSecteur() {
 		return secteur;
 	}
 	public void setSecteur(String secteur) {
 		this.secteur = secteur;
 	}
+	public String getPrix() {
+		return prix;
+	}
+	public void setPrix(String prix) {
+		this.prix = prix;
+	}
+	public int getQuantiteStock() {
+		return quantiteStock;
+	}
+	public void setQuantiteStock(int quantiteStock) {
+		this.quantiteStock = quantiteStock;
+	}
+	
+	
+	
 	
 }

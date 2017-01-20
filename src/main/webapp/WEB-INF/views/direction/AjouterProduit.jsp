@@ -14,6 +14,10 @@
 		<form:input path="prix" />
 		<form:label path="QuantiteStock">Quatité en stock</form:label>
 		<form:input path="QuantiteStock" />
+		<form:select path="secteur">
+			<option value="informatique">informatique</option>
+			<option value="industriel">industriel</option>
+		</form:select>
 		<input type="submit" value="Submit" />
 	</form:form>
 </body>

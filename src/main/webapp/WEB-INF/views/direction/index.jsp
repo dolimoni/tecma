@@ -1,5 +1,5 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 <head>
 <title>Direction</title>
@@ -8,15 +8,17 @@
 	href="resources/bootstrap/css/bootstrap.css">
 <script src="resources/js/bootstrap.css"></script>
 <body>
-	Accueil client
-	<br/>
-	
-	<a href="/system/direction/listeDesProduits?from=0">Les  des produits</a><br/>
-	<a href="/system/tecma/getCommandesByClient">Mes Commandes</a>
-	
-	<form:form method="POST" action="/system/tecma/logout?from=0">
+	Accueil Directeur
+	<br />
+
+	<a href="/system/direction/listeDesProduits?from=2">Liste des
+		produits</a>
+	<br />
+	<a href="/system/direction/getAllOrders">Tous les commandes</a>
+
+	<form:form method="POST" action="/system/tecma/logout?from=1">
 		<input type="submit" value="logout" />
 	</form:form>
-	
+
 </body>
 </html>

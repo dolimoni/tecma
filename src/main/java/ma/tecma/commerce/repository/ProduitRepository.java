@@ -11,5 +11,7 @@ public interface ProduitRepository
 		JpaSpecificationExecutor<Produit> {
 
 	List<Produit> findBySecteur(String secteur);
+
+	List<Produit> findBySecteurAndQuantiteStockGreaterThan(String secteur, int i);
 	
 }

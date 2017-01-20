@@ -7,11 +7,13 @@ import javax.transaction.Transactional;
 import ma.tecma.commerce.domain.Client;
 import ma.tecma.commerce.domain.Commande;
 import ma.tecma.commerce.domain.Commercial;
-import ma.tecma.commerce.domain.Employe;
+import ma.tecma.commerce.domain.Directeur;
 import ma.tecma.commerce.domain.Produit;
+import ma.tecma.commerce.dtos.ProduitDTO;
 import ma.tecma.commerce.repository.ClientRepository;
 import ma.tecma.commerce.repository.CommandeRepository;
 import ma.tecma.commerce.repository.CommercialRepository;
+import ma.tecma.commerce.repository.DirecteurRepository;
 import ma.tecma.commerce.repository.EmployeRepository;
 import ma.tecma.commerce.repository.ProduitRepository;
 
@@ -36,12 +38,20 @@ public class DirectionService {
 	
 	@Autowired
 	private CommercialRepository commercialRepository;
+
+	@Autowired
+	private DirecteurRepository directeurRepository;
 	
 	public DirectionService() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Produit addProduct(Produit produit){
+	public Produit addProduct(ProduitDTO produitDTO){
+		Produit produit = new Produit();
+		produit.setNom(produitDTO.getNom());
+		produit.setPrix(new Long(produitDTO.getPrix()));
+		produit.setQuantiteStock(produitDTO.getQuantiteStock());
+		produit.setSecteur(produitDTO.getSecteur());
 		return produitRepository.saveAndFlush(produit);
 	}
 
@@ -103,6 +113,23 @@ public class DirectionService {
 
 	public Commercial getCommercial(Long id) {
 		return commercialRepository.findOne(id);
+	}
+
+	public boolean authenticateDirecteur(Directeur directeur) {
+		
+		List<Directeur> directeurs = directeurRepository.findByNameAndPassword(directeur.getName(), directeur.getPassword());
+		
+		if(directeurs.size()>0){
+			return true;
+		}else{
+			commercialRepository.findAll().size();
+			return false;
+		}
+	}
+
+	public Object getIdDirecteur(Directeur directeur) {
+		List<Directeur> directeurs = directeurRepository.findByNameAndPassword(directeur.getName(), directeur.getPassword());
+		return directeurs.get(0).getId();
 	}
 
 	

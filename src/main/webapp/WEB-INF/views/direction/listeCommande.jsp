@@ -11,7 +11,10 @@
 <body>
 
 <c:forEach items="${commandes}" var="commande">
-    ${commande.transport}<br>
+    ${commande.produit.nom} ${commande.destinataire.nom} ${commande.status} 
+    <a href="/system/direction/approval?commande_id=${commande.id}">Accepter</a> 
+    <a href="/system/direction/disapproval?commande_id=${commande.id}">Refuser</a> 
+    <br>
 </c:forEach>
 </body>
 </html>

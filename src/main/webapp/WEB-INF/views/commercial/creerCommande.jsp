@@ -8,12 +8,16 @@
 	href="resources/bootstrap/css/bootstrap.css">
 <script src="resources/js/bootstrap.css"></script>
 <body>
+	
+	<c:if test="${insufficientQuantity}">Quantité insuffisante</c:if>
+	<c:if test="${newOrder}">
 	<form:form method="POST" action="/system/tecma/createCommande"
 		modelAttribute="commandeDTO">
 		<form:label path="produitId">produit</form:label>
 		<form:select path="produitId">
-			<option value="2">Dell</option>
-			<option value="1">Acer</option>
+		<c:forEach items="${produitDTOs}" var="produitDTO">
+			<option value="${produitDTO.id}">${produitDTO.nom}</option>
+			</c:forEach>
 		</form:select>
 		<form:label path="quantite">Quantité</form:label>
 		<form:input path="quantite" />
@@ -26,5 +30,11 @@
 		</form:select>
 		<input type="submit" value="Submit" />
 	</form:form>
+	</c:if>
+	<c:if test="${not newOrder}">
+		Aucun produit n'est disponible
+	</c:if>
+	
+	
 </body>
 </html>

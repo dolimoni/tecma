@@ -24,7 +24,7 @@ public class Commande {
 	private double quantite;
 	private String transport;
 	private Boolean sent=false;
-	private String status;
+	private String status="none";
 	
 	@ManyToOne
 	@JoinColumn(name = "CLIENT_ID")

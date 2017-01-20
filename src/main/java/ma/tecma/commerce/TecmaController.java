@@ -2,14 +2,18 @@ package ma.tecma.commerce;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import ma.tecma.commerce.domain.Client;
 import ma.tecma.commerce.domain.Commande;
 import ma.tecma.commerce.domain.Commercial;
+import ma.tecma.commerce.domain.Directeur;
+import ma.tecma.commerce.domain.Produit;
 import ma.tecma.commerce.dtos.ClientDTO;
 import ma.tecma.commerce.dtos.CommandeDTO;
+import ma.tecma.commerce.dtos.ProduitDTO;
 import ma.tecma.commerce.service.CommandeService;
 import ma.tecma.commerce.service.DirectionService;
 
@@ -46,23 +50,54 @@ public class TecmaController {
 		
 		
 		Long id = (Long)request.getSession().getAttribute("commercialId");
+		Commercial commercial = directionService.getCommercial(id);
+		List<Produit> produits = commandeService.getProductsByDomainForOrders(commercial.getSecteur());
+		List<ProduitDTO> produitDTOs = new ArrayList<ProduitDTO>();
+		for (Produit produit : produits) {
+			produitDTOs.add(new ProduitDTO(produit));
+		}
+		boolean newOrder = false;
+		if(produits.size()>0){
+			newOrder=true;
+		}
 		if(id==null){
 			return new ModelAndView("commercial/authentification");
 		}
 		ModelAndView modelAndView = new ModelAndView("commercial/creerCommande","commercial",new Commercial());
 		modelAndView.addObject("commandeDTO", new CommandeDTO());
+		modelAndView.addObject("produitDTOs", produitDTOs);
+		modelAndView.addObject("newOrder", newOrder);
 		modelAndView.addObject("clientDTOs", getClientByCommercial(id));
 		return modelAndView;
 	}
 	@RequestMapping(value="/tecma/createCommande",method = RequestMethod.POST)
 	public ModelAndView createCommande(HttpServletRequest request, @ModelAttribute("commande")CommandeDTO commandeDTO) {
-		Long id = (Long)request.getSession().getAttribute("commercialId");
-		if(id==null){
+		Long commercialId = (Long)request.getSession().getAttribute("commercialId");
+		if(commercialId==null){
 			return new ModelAndView("commerical/index");
 		}
-		Long idCommercial = (Long)request.getSession().getAttribute("idCommercial"); 
-		commandeService.AjouterUneCommande(commandeDTO, idCommercial);// 
-		return new ModelAndView("commercial/index");
+		Map<String, Object> response = commandeService.AjouterUneCommande(commandeDTO, commercialId);// 
+		
+		
+		if((Boolean)response.get("insufficientQuantity")){
+			Commercial commercial = directionService.getCommercial(commercialId);
+			List<Produit> produits = commandeService.getProductsByDomainForOrders(commercial.getSecteur());
+			List<ProduitDTO> produitDTOs = new ArrayList<ProduitDTO>();
+			for (Produit produit : produits) {
+				produitDTOs.add(new ProduitDTO(produit));
+			}
+			ModelAndView modelAndView = new ModelAndView("commercial/creerCommande","commercial",new Commercial());
+			modelAndView.addObject("commandeDTO", new CommandeDTO());
+			modelAndView.addObject("produitDTOs", produitDTOs);
+			modelAndView.addObject("clientDTOs", getClientByCommercial(commercialId));
+			modelAndView.addObject("insufficientQuantity",true);
+			modelAndView.addObject("newOrder", true);
+			return modelAndView;
+			
+		}
+		Commande commande = (Commande) response.get("commande");
+		CommandeDTO commandeDTO2 = new CommandeDTO(commande);
+		return new ModelAndView("commercial/showOrder","orderDTO",commandeDTO2);
 	}
 	
 
@@ -193,4 +228,30 @@ public class TecmaController {
 		}
 		
 	}
+	@RequestMapping("/tecma/accueilClient")
+	public ModelAndView accueilClient(){
+		return new ModelAndView("client/accueil");
+	}
+	@RequestMapping("/tecma/authentificationDirecteur")
+	public ModelAndView authentificationDirecteur() {
+		Directeur directeur = new Directeur();
+		return new ModelAndView("direction/authentification","directeur",directeur);
+	}
+	@RequestMapping(value="/tecma/authenticateDirection",method = RequestMethod.POST)
+	public ModelAndView authenticateDirection(@ModelAttribute("directeur")Directeur directeur, 
+			   ModelMap model,HttpServletRequest request) {
+		if(directionService.authenticateDirecteur(directeur))
+		{
+			request.getSession().setAttribute("directeurId", directionService.getIdDirecteur(directeur));
+			return new ModelAndView("direction/index");
+		}else{
+			ModelAndView modelAndView = new ModelAndView("direction/authentification","directeur",new Directeur());
+			modelAndView.addObject("direction", directeur);
+			modelAndView.addObject("invalidUsernameOrPassword", true);
+			return modelAndView;
+		}
+		
+	}
+	
+	
 }

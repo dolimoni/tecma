@@ -3,7 +3,9 @@ package ma.tecma.commerce.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -41,13 +43,22 @@ public class CommandeService {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Commande AjouterUneCommande(CommandeDTO commandeDTO, Long idCommercial){
+	public Map<String, Object> AjouterUneCommande(CommandeDTO commandeDTO, Long idCommercial){
 		
-		
+		Map<String, Object> response = new HashMap<String, Object>();
 		Commande commande = new Commande();
 		Commercial commercial = (Commercial)employeRepsitory.findOne(idCommercial);
-		Client client = clientRepository.findOne(new Long(commandeDTO.getClientId()));
 		Produit produit = produitRepository.findOne(new Long(commandeDTO.getProduitId()));
+		
+		if(produit.getQuantiteStock()<commandeDTO.getQuantite()){
+			response.put("insufficientQuantity", true);
+			return response;
+		}else{
+			response.put("insufficientQuantity", false);
+			produit.setQuantiteStock(produit.getQuantiteStock()-(int)commandeDTO.getQuantite());
+		}
+		
+		Client client = clientRepository.findOne(new Long(commandeDTO.getClientId()));
 		
 		
 		commande.setCommercial(commercial);
@@ -72,7 +83,11 @@ public class CommandeService {
 		//ajout de la date de validité
 		commande.setDateValidite(dateLivraison);
 
-		return commandeRepository.saveAndFlush(commande);
+		//modifier la quantité du produit dans le stock
+		produitRepository.saveAndFlush(produit);
+		commandeRepository.saveAndFlush(commande);
+		response.put("commande", commande);
+		return response;
 	}
 
 	public List<Commande> getCommandeByCommercial(Long id) {
@@ -112,6 +127,11 @@ public class CommandeService {
 	public List<Produit> getProductsByDomain(String secteur) {
 		// TODO Auto-generated method stub
 		return produitRepository.findBySecteur(secteur);
+	}
+
+	public List<Produit> getProductsByDomainForOrders(String secteur) {
+		// TODO Auto-generated method stub
+		return produitRepository.findBySecteurAndQuantiteStockGreaterThan(secteur,0);
 	}
 	
 }

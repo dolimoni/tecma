@@ -9,11 +9,13 @@ import ma.tecma.commerce.domain.Client;
 import ma.tecma.commerce.domain.Commande;
 import ma.tecma.commerce.domain.Commercial;
 import ma.tecma.commerce.domain.Produit;
+import ma.tecma.commerce.dtos.ProduitDTO;
 import ma.tecma.commerce.service.CommandeService;
 import ma.tecma.commerce.service.DirectionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,17 +35,15 @@ public class DirectionController  {
 	@RequestMapping("/direction/AjouterProduit")
 	public ModelAndView AjouterProduit() {
 		
-		return new ModelAndView("AjouterProduit","produit", new Produit());
+		return new ModelAndView("direction/AjouterProduit","produit", new Produit());
 	}
 	
 	@RequestMapping(value="/direction/addProduct",method = RequestMethod.POST)
-	public ModelAndView addProduct() {
-		Produit produit = new Produit();
-		produit.setNom("céréales");
-		produit.setPrix(7);
-		produit.setQuantiteStock(1000);
-		directionService.addProduct(produit);
-		return new ModelAndView("create");
+	public ModelAndView addProduct(@ModelAttribute("produit")ProduitDTO produitDTO) {
+		
+		directionService.addProduct(produitDTO);
+		List<Produit> produits= directionService.getAllProducts();
+		return new ModelAndView("direction/listeProduits","produits",produits);
 	}
 	
 	@RequestMapping("/direction/getProduct")
@@ -52,15 +52,15 @@ public class DirectionController  {
 		return new ModelAndView("create");
 	}
 	
-	@RequestMapping("/direction/editProduct")
-	public ModelAndView editProduct() {
-		Produit produit = commandeService.getProduct(1L);
-		produit.setNom("céréales");
-		produit.setPrix(7);
-		produit.setQuantiteStock(1000);
-		directionService.addProduct(produit);
-		return new ModelAndView("create");
-	}
+//	@RequestMapping("/direction/editProduct")
+//	public ModelAndView editProduct() {
+//		Produit produit = commandeService.getProduct(1L);
+//		produit.setNom("céréales");
+//		produit.setPrix(7);
+//		produit.setQuantiteStock(1000);
+//		directionService.addProduct(produit);
+//		return new ModelAndView("create");
+//	}
 	
 	@RequestMapping("/direction/getAllProducts")
 	public ModelAndView getAllProducts() {
@@ -70,24 +70,30 @@ public class DirectionController  {
 	
 	@RequestMapping("/direction/listeDesProduits")
 	public ModelAndView listeDesProduits(@RequestParam("from") String from, HttpServletRequest request) {
-		Long idCommercial = (Long)request.getSession().getAttribute("commercialId");
-		if(idCommercial==null){
-			return new ModelAndView("commercial/authentification","commercial",new Commercial());
-		}
+		
 		String vue = "";
 		List<Produit> produits = new ArrayList<Produit>();
 		
 		if("0".equals(from)){
 			Long id = (Long)request.getSession().getAttribute("clientId");
+			if(id==null){
+				return new ModelAndView("client/authentification","commercial",new Commercial());
+			}
 			Client client = directionService.getClient(id);
 			String secteur = client.getSecteur();
 			produits=commandeService.getProductsByDomain(secteur);
 			vue="client/";
-		}else{
+		}else if("1".equals(from)){
 			 vue = "commercial/";
 			 Long id = (Long)request.getSession().getAttribute("commercialId");
+			 if(id==null){
+					return new ModelAndView("commercial/authentification","commercial",new Commercial());
+				}
 			 Commercial commercial = directionService.getCommercial(id);
 			 produits=commandeService.getProductsByDomain(commercial.getSecteur());
+		}else if("2".equals(from)){
+			 vue = "direction/";
+			 produits=directionService.getAllProducts();
 		}
 		System.out.println("Nombre de produits "+produits.size()+" Affichage dans "+vue+"listeProduits");
 		return new ModelAndView(vue+"listeProduits","produits",produits);
@@ -97,7 +103,7 @@ public class DirectionController  {
 	@RequestMapping("/direction/getAllOrders")
 	public ModelAndView getAllOrders() {
 		List<Commande> commandes= directionService.getAllOrders();
-		return new ModelAndView("create");
+		return new ModelAndView("direction/listeCommande","commandes",commandes);
 	}
 	
 	@RequestMapping("/direction/listeDesCommandes")
@@ -108,9 +114,20 @@ public class DirectionController  {
 	
 	
 	@RequestMapping("/direction/approval")
-	public ModelAndView approval() {
-		Commande commande=commandeService.getCommandeById(1L);
+	public ModelAndView approval(@RequestParam("commande_id") String commande_id) {
+		Long id = new Long(commande_id);
+		Commande commande=commandeService.getCommandeById(id);
 		commandeService.approval(commande,true);
-		return new ModelAndView("create");
+		List<Commande> commandes= directionService.getAllOrders();
+		return new ModelAndView("direction/listeCommande","commandes",commandes);
+	}
+	
+	@RequestMapping("/direction/disapproval")
+	public ModelAndView disapproval(@RequestParam("commande_id") String commande_id) {
+		Long id = new Long(commande_id);
+		Commande commande=commandeService.getCommandeById(id);
+		commandeService.approval(commande,false);
+		List<Commande> commandes= directionService.getAllOrders();
+		return new ModelAndView("direction/listeCommande","commandes",commandes);
 	}
 }
