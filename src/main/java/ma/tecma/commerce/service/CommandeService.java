@@ -121,7 +121,7 @@ public class CommandeService {
 
 	public List<Commande> getCommandesByClient(Long id) {
 		Client client = clientRepository.findOne(id);
-		return commandeRepository.findByDestinataire(client);
+		return commandeRepository.findByDestinataireAndSent(client,true);
 	}
 
 	public List<Produit> getProductsByDomain(String secteur) {

@@ -14,4 +14,5 @@ public interface CommandeRepository
 	
 	public List<Commande> findByCommercial(Commercial commercial);
 	public List<Commande> findByDestinataire(Client client);
+	public List<Commande> findByDestinataireAndSent(Client client, boolean sent);
 }
